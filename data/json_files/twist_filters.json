@@ -1,0 +1,19 @@
+{
+    "twist_filters": [
+        {
+            "name": "Top Boolean Algebra_twist_Four",
+            "twist_name": "Four",
+            "lattice_filter_name": "Top Boolean Algebra",
+            "filter_elements": [["1", "0"],
+                ["1", "1"]]
+        },
+        {
+            "name": "Top Three-Valued Algebra_twist_Nine",
+            "twist_name": "Nine",
+            "lattice_filter_name": "Top Three-Valued Algebra",
+            "filter_elements": [["1", "0"],
+                ["1", "1"],
+                ["1", "1/2"]]
+        }
+    ]
+}

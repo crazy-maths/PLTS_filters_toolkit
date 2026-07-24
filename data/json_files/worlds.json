@@ -1,0 +1,156 @@
+{
+    "worlds": [
+        {
+            "world_name": "start",
+            "short_world_name": "start",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "Win1": "('0', '1')",
+                "Win2": "('0', '1')"
+            }
+        },
+        {
+            "world_name": "int1",
+            "short_world_name": "int1",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "Win1": "('0', '1')",
+                "Win2": "('0', '1')"
+            }
+        },
+        {
+            "world_name": "int2",
+            "short_world_name": "int2",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "Win1": "('0', '1')",
+                "Win2": "('0', '1')"
+            }
+        },
+        {
+            "world_name": "Winner1",
+            "short_world_name": "win1",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "Win1": "('1', '0')",
+                "Win2": "('0', '1')"
+            }
+        },
+        {
+            "world_name": "Winner2",
+            "short_world_name": "win2",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "Win1": "('0', '1')",
+                "Win2": "('1', '0')"
+            }
+        },
+        {
+            "world_name": "v1",
+            "short_world_name": "v1",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "Obst": "('0', '1')"
+            }
+        },
+        {
+            "world_name": "v2",
+            "short_world_name": "v2",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "Obst": "('0', '1')"
+            }
+        },
+        {
+            "world_name": "v3",
+            "short_world_name": "v3",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "Obst": "('1', '0')"
+            }
+        },
+        {
+            "world_name": "v4",
+            "short_world_name": "v4",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "Obst": "('0', '1')"
+            }
+        },
+        {
+            "world_name": "s0",
+            "short_world_name": "s0",
+            "twist_structure_name": "Four",
+            "assignments": {
+                "p": "('0', '1')",
+                "q": "('1', '0')"
+            }
+        },
+        {
+            "world_name": "s1",
+            "short_world_name": "s1",
+            "twist_structure_name": "Four",
+            "assignments": {
+                "p": "('0', '1')",
+                "q": "('0', '1')"
+            }
+        },
+        {
+            "world_name": "s2",
+            "short_world_name": "s2",
+            "twist_structure_name": "Four",
+            "assignments": {
+                "p": "('1', '1')",
+                "q": "('1', '0')"
+            }
+        },
+        {
+            "world_name": "s_H_OTM",
+            "short_world_name": "H_OTM",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "profitable": "('0', '1')"
+            }
+        },
+        {
+            "world_name": "s_H_ITM",
+            "short_world_name": "H_ITM",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "profitable": "('1', '0')"
+            }
+        },
+        {
+            "world_name": "s_H_ATM",
+            "short_world_name": "H_ATM",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "profitable": "('1/2', '1/2')"
+            }
+        },
+        {
+            "world_name": "s_L_OTM",
+            "short_world_name": "L_OTM",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "profitable": "('0', '1')"
+            }
+        },
+        {
+            "world_name": "s_L_ATM",
+            "short_world_name": "L_ATM",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "profitable": "('0', '0')"
+            }
+        },
+        {
+            "world_name": "s_L_ITM",
+            "short_world_name": "L_ITM",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "profitable": "('1', '1/2')"
+            }
+        }
+    ]
+}

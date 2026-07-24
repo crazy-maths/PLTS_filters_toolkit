@@ -1,0 +1,453 @@
+{
+    "models": [
+        {
+            "model_name": "Game",
+            "description": "The following example models a coin-toss game between two players. Player 1 bets on heads and Player 2 on tails. Player 1 tosses a coin and announces either heads or tails, but keeps the actual outcome hidden. If Player 1 announces tails, Player 2 immediately wins. If Player 1 announces heads, Player 2 may pass (Player 1 wins) or challenge (Player 1 reveals the true outcome, and the correct bet wins). From Player 2's perspective, the game is represented by the \u201cGame\u201d PLTS, with five states: the starting state (start), two intermediate states (int1, int2), and two terminal winner states (Winner 1, Winner 2). Propositions \u201cWin1\u201d and \u201cWin2\u201d take value (1,0) only at their respective winner states and (0,1) elsewhere. Player 1's announcements are given by actions \u201cheads\u201d and \u201ctails\u201d, and Player 2's responses are given by actions \u201cpass\u201d and \u201cchallenge\u201d. Transitions are weighted in {0, 1/2, 1}^2 to represent Player 2's evidence for and against each action. For example, at the start state, the transitions labelled \u201cheads\u201d and \u201ctails\u201d both carry weight (1/2,1/2), reflecting complete uncertainty about the coin toss.",
+            "twist_structure_name": "Nine",
+            "worlds": [
+                "start",
+                "Winner1",
+                "int1",
+                "int2",
+                "Winner2"
+            ],
+            "accessibility_relations": {
+                "tails": {
+                    "Winner1": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    },
+                    "Winner2": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    },
+                    "int1": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    },
+                    "int2": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["1", "0"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    },
+                    "start": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["1/2", "1/2"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    }
+                },
+                "challenge": {
+                    "Winner1": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    },
+                    "Winner2": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    },
+                    "int1": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["0", "1"],
+                        "int2": ["1", "1/2"],
+                        "start": ["0", "1"]
+                    },
+                    "int2": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    },
+                    "start": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    }
+                },
+                "pass": {
+                    "Winner1": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    },
+                    "Winner2": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    },
+                    "int1": {
+                        "Winner1": ["1/2", "1/2"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    },
+                    "int2": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    },
+                    "start": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    }
+                },
+                "heads": {
+                    "Winner1": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    },
+                    "Winner2": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    },
+                    "int1": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    },
+                    "int2": {
+                        "Winner1": ["1", "0"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["0", "1"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    },
+                    "start": {
+                        "Winner1": ["0", "1"],
+                        "Winner2": ["0", "1"],
+                        "int1": ["1/2", "1/2"],
+                        "int2": ["0", "1"],
+                        "start": ["0", "1"]
+                    }
+                }
+            },
+            "props": ["Win1", "Win2"]
+        },
+        {
+            "model_name": "Robot",
+            "description": "The following example models a robot moving along a path while receiving possibly inconsistent information about obstacles. To reflect disagreements between sensors, the model uses two groups: \"positive sensors\", which provide evidence that the path is clear, and \"negative sensors\", which provide evidence that it is obstructed. Each sensor outputs a value in {0, 1/2, 1}, where 0 denotes falsity, 1 truth, and 1/2 uncertainty. The Robot PLTS consists of four checkpoints (states) connected by the action \u201cmove\u201d. Each transition is weighted by a pair (tt, ff), where tt represents the evidence from the positive sensors that the path is clear, and ff represents the evidence from the negative sensors that it is obstructed. In addition, the proposition \u201cObst\u201d indicates whether a checkpoint contains an obstacle: it has value (1, 0) only at v3, and (0, 1) elsewhere.",
+            "twist_structure_name": "Nine",
+            "worlds": [
+                "v3",
+                "v2",
+                "v1",
+                "v4"
+            ],
+            "accessibility_relations": {
+                "move": {
+                    "v1": {
+                        "v1": ["0", "1"],
+                        "v2": ["1", "0"],
+                        "v3": ["1", "1"],
+                        "v4": ["0", "1"]
+                    },
+                    "v2": {
+                        "v1": ["1", "0"],
+                        "v2": ["0", "1"],
+                        "v3": ["0", "1"],
+                        "v4": ["1/2", "0"]
+                    },
+                    "v3": {
+                        "v1": ["0", "1"],
+                        "v2": ["0", "1"],
+                        "v3": ["0", "1"],
+                        "v4": ["0", "1"]
+                    },
+                    "v4": {
+                        "v1": ["0", "1"],
+                        "v2": ["1/2", "0"],
+                        "v3": ["1/2", "1"],
+                        "v4": ["0", "1"]
+                    }
+                }
+            },
+            "props": ["Obst"]
+        },
+        {
+            "model_name": "PLTS Paper",
+            "description": "This example ilustrates a PLTS with three states (s0, s1, s2) and one action (a) with valuations taken in the Four twist structure.",
+            "twist_structure_name": "Four",
+            "worlds": [
+                "s2",
+                "s0",
+                "s1"
+            ],
+            "accessibility_relations": {
+                "a": {
+                    "s0": {
+                        "s0": ["0", "1"],
+                        "s1": ["1", "1"],
+                        "s2": ["0", "1"]
+                    },
+                    "s1": {
+                        "s0": ["0", "1"],
+                        "s1": ["0", "1"],
+                        "s2": ["1", "0"]
+                    },
+                    "s2": {
+                        "s0": ["0", "0"],
+                        "s1": ["0", "1"],
+                        "s2": ["0", "1"]
+                    }
+                }
+            },
+            "props": ["p", "q"]
+        },
+        {
+            "model_name": "Options Trading",
+            "description": "This example models an options trading scenario using PLTS to reason about conflicting market signals. The state space combines the option\u2019s moneyness, In-the-Money (ITM), At-the-Money (ATM), and Out-of-the-Money (OTM), with two temporal layers representing whether the expiration date is further (H) or closer (L), resulting in six possible states. Transitions capture market dynamics through price movements (price_up, price_down), temporal progression (time_pass), and volatility changes (vol_spike).",
+            "twist_structure_name": "Nine",
+            "worlds": [
+                "s_L_ITM",
+                "s_L_OTM",
+                "s_H_ITM",
+                "s_L_ATM",
+                "s_H_OTM",
+                "s_H_ATM"
+            ],
+            "accessibility_relations": {
+                "price_down": {
+                    "s_H_ATM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_H_ITM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_H_OTM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_L_ATM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["1/2", "1/2"]
+                    },
+                    "s_L_ITM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["1", "0"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_L_OTM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    }
+                },
+                "time_pass": {
+                    "s_H_ATM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["1", "1/2"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_H_ITM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["1", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_H_OTM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["1", "0"]
+                    },
+                    "s_L_ATM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_L_ITM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_L_OTM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    }
+                },
+                "vol_spike": {
+                    "s_H_ATM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "0"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_H_ITM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_H_OTM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_L_ATM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_L_ITM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_L_OTM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    }
+                },
+                "price_up": {
+                    "s_H_ATM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["1", "1/2"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_H_ITM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_H_OTM": {
+                        "s_H_ATM": ["1", "0"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_L_ATM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_L_ITM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    },
+                    "s_L_OTM": {
+                        "s_H_ATM": ["0", "1"],
+                        "s_H_ITM": ["0", "1"],
+                        "s_H_OTM": ["0", "1"],
+                        "s_L_ATM": ["0", "1"],
+                        "s_L_ITM": ["0", "1"],
+                        "s_L_OTM": ["0", "1"]
+                    }
+                }
+            },
+            "props": ["profitable"]
+        }
+    ]
+}
