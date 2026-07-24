@@ -4,26 +4,26 @@ A Python-based graphical toolkit for constructing, visualizing, and analyzing Pa
 
 ## Overview
 
-The **PLTS Editor** is an interactive GUI application designed for researchers and students working with non-classical logics. It allows users to define algebraic foundations (Complete Distributive Residuated Lattices and Filters), construct PLTSs where transitions and valuations are weighted by truth pairs, and evaluate modal formulas using the algebraic semantics of Twist Structures.
+The **PLTS Editor:** is an interactive GUI application designed for researchers and students working with non-classical logics. It allows users to define algebraic foundations (Complete Distributive Residuated Lattices and Filters), construct PLTSs where transitions and valuations are weighted by truth pairs, and evaluate modal formulas using the algebraic semantics of Twist Structures.
 
 ## Features
 
 ### 1. Algebraic Structure Creation
 
-- **Complete Distributive Residuated Lattices** Define custom finite Complete Distributive Residuated Lattices.
-- **Twist Structures** Automatically generate Twist Structures ($A^2$) from a base Lattice. Truth values are represented as pairs $(t, f)$ (evidence for, evidence against).
-- **Filters** Define custom filters for Lattices and automatically generate filters for Twist Structures.
-- **Hasse Diagrams** Visualize the partial order of any Lattice or Twist Structure using Hasse diagrams.
+- **Complete Distributive Residuated Lattices:** Define custom finite Complete Distributive Residuated Lattices.
+- **Twist Structures:** Automatically generate Twist Structures ($A^2$) from a base Lattice. Truth values are represented as pairs $(t, f)$ (evidence for, evidence against).
+- **Filters:** Define custom filters for Lattices and automatically generate filters for Twist Structures.
+- **Hasse Diagrams:** Visualize the partial order of any Lattice or Twist Structure using Hasse diagrams.
 
 ### 2. Paraconsistent Modeling
 
-- **Batch State Creation** Efficiently create multiple states with valuations assigned from the underlying Twist Structure.
-- **Weighted Accessibility Relations** Build Kripke-style models where transitions are not just present/absent but carry a **weight** $(t, f)$ from the algebra.
-- **PLTS Visualization** View PLTSs as directed graphs with support for bidirectional edges, self-loops, and clear labeling of actions and weights.
+- **Batch State Creation:** Efficiently create multiple states with valuations assigned from the underlying Twist Structure.
+- **Weighted Accessibility Relations:** Build Kripke-style models where transitions are not just present/absent but carry a **weight** $(t, f)$ from the algebra.
+- **PLTS Visualization:** View PLTSs as directed graphs with support for bidirectional edges, self-loops, and clear labeling of actions and weights.
 
 ### 3. Local and Global Satisfaction
 
-- **Formula Parser** Interpret complex formulas using the specific semantics of Paraconsistent Modal Logic. Supported operators include:
+- **Formula Parser:** Interpret complex formulas using the specific semantics of Paraconsistent Modal Logic. Supported operators include:
   - **Modal:** Box (`[]`), Diamond (`<>` - weighted by relation)
   - **Lattice:** Weak Meet (`&`), Weak Join (`|`)
   - **Material:** Material Implication (`->`), Material Equivalence (`<->`)
@@ -35,9 +35,9 @@ The **PLTS Editor** is an interactive GUI application designed for researchers a
 
 ### 4. User Interface
 
-- **Dark Mode** Toggle between Light and Dark themes for comfortable viewing in different lighting conditions.
-- **JSON Persistence** Save and Load your Lattices, Filters, Structures, States, and PLTSs to JSON files to preserve your workspace.
-- **Definitions & Legend** Built-in reference guides for mathematical definitions and logic symbols.
+- **Dark Mode:** Toggle between Light and Dark themes for comfortable viewing in different lighting conditions.
+- **JSON Persistence:** Save and Load your Lattices, Filters, Structures, States, and PLTSs to JSON files to preserve your workspace.
+- **Definitions & Legend:** Built-in reference guides for mathematical definitions and logic symbols.
 
 ## Installation
 
