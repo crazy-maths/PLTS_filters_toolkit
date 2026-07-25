@@ -18,6 +18,7 @@ from math_objects.model import Model
 from math_objects.filters import LatticeFilter
 from math_objects.filters import TwistFilter
 from math_objects.model import FilteredModel
+from math_objects.morphism import PLTSMorphism
 
 logger = get_logger("JSONHandler")
 
@@ -529,5 +530,82 @@ class JSONHandler:
         data = JSONHandler._load_safe(filename)
         if 'filtered_models' in data:
             data['filtered_models'] = [fm for fm in data['filtered_models'] if fm.get('filtered_model_name') != filtered_model_name]
+            with open(filename, 'w', encoding='utf-8') as f: 
+                f.write(JSONHandler._compact_json(data))
+
+    @staticmethod
+    def load_morphism_from_json(
+        filename: str, 
+        morphism_name: str, 
+        models_file: str = PATHS["models"]
+    ) -> Optional[PLTSMorphism]:
+        data = JSONHandler._load_safe(filename)
+        if 'morphisms' in data:
+            for m_data in data['morphisms']:
+                if m_data.get('name') == morphism_name:
+                    try:
+                        source_name = m_data.get('source_model')
+                        target_name = m_data.get('target_model')
+                        mapping_raw = m_data.get('mapping', {})
+                        
+                        source_model = JSONHandler.load_model_from_json(models_file, source_name)
+                        target_model = JSONHandler.load_model_from_json(models_file, target_name)
+                        
+                        if not source_model or not target_model:
+                            logger.error(f"Failed to load source or target model for morphism '{morphism_name}'")
+                            return None
+                        
+                        mapping = {}
+                        src_world_map = {w.name_long: w for w in source_model.worlds}
+                        tgt_world_map = {w.name_long: w for w in target_model.worlds}
+                        
+                        for src_w_name, tgt_w_name in mapping_raw.items():
+                            if src_w_name in src_world_map and tgt_w_name in tgt_world_map:
+                                mapping[src_world_map[src_w_name]] = tgt_world_map[tgt_w_name]
+                        
+                        return PLTSMorphism(
+                            name=morphism_name,
+                            source_model=source_model,
+                            target_model=target_model,
+                            mapping=mapping,
+                            description=m_data.get('description', "")
+                        )
+                    except Exception as e:
+                        logger.error(f"Error loading morphism '{morphism_name}' from {filename}: {str(e)}")
+                        return None
+        return None
+
+    @staticmethod
+    def save_morphism_to_json(filename: str, morphism: PLTSMorphism) -> bool:
+        try:
+            data = JSONHandler._load_safe(filename)
+            if 'morphisms' not in data: 
+                data['morphisms'] = []
+            
+            m_list = [m for m in data['morphisms'] if m.get('name') != morphism.name]
+            
+            mapping_dict = {src_w.name_long: tgt_w.name_long for src_w, tgt_w in morphism.mapping.items()}
+            
+            m_list.append({
+                "name": morphism.name,
+                "source_model": morphism.source_model.name_model,
+                "target_model": morphism.target_model.name_model,
+                "mapping": mapping_dict,
+                "description": morphism.description
+            })
+            data['morphisms'] = m_list
+            
+            with open(filename, 'w', encoding='utf-8') as f: 
+                f.write(JSONHandler._compact_json(data))
+            return True
+        except Exception as e:
+            logger.error(f"Error saving Morphism '{morphism.name}' to {filename}: {str(e)}")
+            return False
+
+    @staticmethod
+    def delete_morphism_from_json(filename: str, morphism_name: str) -> None:
+        data = JSONHandler._load_safe(filename)
+        if 'morphisms' in data:
+            data['morphisms'] = [m for m in data['morphisms'] if m.get('name') != morphism_name]
             with open(filename, 'w', encoding='utf-8') as f: 
                 f.write(JSONHandler._compact_json(data))

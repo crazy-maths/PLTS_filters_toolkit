@@ -175,3 +175,62 @@
 2026-07-25 14:22:37,198 [INFO] ObjectManager: Registered Lattice Filter: Top Three-Valued Algebra
 2026-07-25 14:22:48,748 [INFO] ErrorHandler: Prompting user confirmation - Confirm Deletion: Delete 1 item(s)?
 2026-07-25 14:22:49,799 [INFO] ObjectManager: Deleted Filtered Model: Game_filtered_Top Three-Valued Algebra_twist_Nine
+2026-07-25 15:57:10,625 [CRITICAL] root: Unhandled exception occurred
+Traceback (most recent call last):
+  File "c:\Users\rodri\OneDrive\Ambiente de Trabalho\PLTS_toolkit\app_object_creation\new_morphism_dialog.py", line 172, in verify_mapping
+    is_valid, errors = morphism.verify_morphism()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\rodri\OneDrive\Ambiente de Trabalho\PLTS_toolkit\math_objects\morphism.py", line 72, in verify_morphism
+    errors.endswith(
+    ^^^^^^^^^^^^^^^
+AttributeError: 'list' object has no attribute 'endswith'
+2026-07-25 16:13:49,729 [INFO] ObjectManager: Registered Morphism: morf_test
+2026-07-25 16:13:49,729 [INFO] ObjectManager: Registered Model: Game
+2026-07-25 16:13:49,744 [INFO] ObjectManager: Registered Twist Structure: Nine
+2026-07-25 16:13:49,744 [INFO] ObjectManager: Registered Lattice: Lukasiewicz Three-Valued Algebra
+2026-07-25 16:13:49,744 [INFO] ObjectManager: Registered World: int2
+2026-07-25 16:13:49,746 [INFO] ObjectManager: Registered World: Winner2
+2026-07-25 16:13:49,746 [INFO] ObjectManager: Registered World: start
+2026-07-25 16:13:49,748 [INFO] ObjectManager: Registered World: int1
+2026-07-25 16:13:49,748 [INFO] ObjectManager: Registered World: Winner1
+2026-07-25 16:15:34,257 [INFO] ErrorHandler: Prompting user confirmation - Confirm Deletion: Delete 1 item(s)?
+2026-07-25 16:15:35,901 [INFO] ObjectManager: Deleted Morphism: morf_test
+2026-07-25 16:21:42,026 [INFO] ErrorHandler: Load Morphism: No objects found in c:\Users\rodri\OneDrive\Ambiente de Trabalho\PLTS_toolkit\data\json_files\morphisms.json.
+2026-07-25 16:21:47,106 [INFO] ErrorHandler: File Content: c:\Users\rodri\OneDrive\Ambiente de Trabalho\PLTS_toolkit\data\json_files\morphisms.json: No items found.
+2026-07-25 16:21:52,992 [INFO] ErrorHandler: Symbol Legend: 
+        <h3 style='color:#3498db;'>Symbol Legend</h3>
+        <table border="1" cellpadding="4" cellspacing="0" style='border-collapse: collapse; color:white;'>
+            <tr style='background-color:#333;'><td><b>Button</b></td><td><b>Input</b></td><td><b>Description</b></td><td><b>Definition</b></td></tr>
+            <tr><td>□</td><td>[a]</td><td>Box</td><td>¬&lt;a&gt;¬A</td></tr>
+            <tr><td>◇</td><td>&lt;a&gt;</td><td>Diamond</td><td>&lt;a&gt;A</td></tr>
+            <tr><td>¬</td><td>~</td><td>Negation</td><td>¬A</td></tr>
+            <tr><td>▷</td><td>-&gt;</td><td>Material Imp.</td><td>¬A ⊔ B</td></tr>
+            <tr><td>▷◁</td><td>&lt;-&gt;</td><td>Material Iff.</td><td>(A ▷ B) ⊓ (B ▷ A)</td></tr>
+            <tr><td>∧</td><td>&</td><td>Weak Meet</td><td>Conjunction (⊓)</td></tr>
+            <tr><td>∨</td><td>|</td><td>Weak Join</td><td>Disjunction (⊔)</td></tr>
+            <tr><td>⊥</td><td>0 / BOT</td><td>Bottom</td><td>Absolute False</td></tr>
+            <tr><td>⊤</td><td>1 / TOP</td><td>Top</td><td>Absolute True</td></tr>
+        </table>
+2026-07-25 16:21:57,213 [INFO] ErrorHandler: Definitions: 
+        <div style='color:#ffffff;'>
+        <h3 style='color:#5dade2;'>Paraconsistent Definitions</h3>
+        <p>Truth values are pairs (t, f) - evidence for/against.</p>
+        <h4 style='color:#5dade2;'>Logic Operations</h4>
+        <ul><li>Negation (¬): ¬(t, f) = (f, t)</li>
+            <li>Weak Meet (⊓): (t1, f1) ⊓ (t2, f2) = (t1 ∧ t2, f1 ∨ f2)</li>
+            <li>Weak Join (⊔): (t1, f1) ⊔ (t2, f2) = (t1 ∨ t2, f1 ∧ f2)</li>
+        </ul>
+        <h4 style='color:#5dade2;'>Modalities</h4>
+        <ul><li>Diamond (⟨a⟩φ): ⊔<sub>v∈W</sub> ( R<sub>a</sub>(w,v) ⊙ V(v, φ) )</li>
+            <li>Box ([a]φ): ¬⟨a⟩¬φ</li></ul>
+        
+        <h4 style='color:#5dade2;'>Filters</h4>
+        <ul>
+            <li>Filter (F): A nonempty subset F &sub; L, satisfying:
+                <ul>
+                    <li>a ∧ b ∈ F ⟺ (a ∈ F and b ∈ F)</li>
+                    <li>a ∨ b ∈ F ⟺ (a ∈ F or b ∈ F)</li>
+                </ul>
+            </li>
+        </ul>
+        </div>

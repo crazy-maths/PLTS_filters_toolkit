@@ -196,3 +196,33 @@ class HTMLRenderer:
         <p><b>Underlying Lattice Filter:</b> {twist_filter.lattice_filter.name}</p>
         <p><b>Filter Elements:</b> {{{elements_str}}}</p>
         """
+
+    @staticmethod
+    def render_morphism(morphism, colors: dict) -> str:
+        if not morphism:
+            return "<p>No Morphism selected.</p>"
+            
+        c_head, c_text, c_sub = colors["header"], colors["text"], colors["subtle"]
+        
+        html = f"<h3 style='color:{c_head};'>MORPHISM: {morphism.name}</h3>"
+        if hasattr(morphism, 'description') and morphism.description:
+            html += f"<b>Description:</b><br><i style='color:{c_text};'>{morphism.description}</i><br><br>"
+            
+        src_name = morphism.source_model.name_model if morphism.source_model else "Unknown"
+        tgt_name = morphism.target_model.name_model if morphism.target_model else "Unknown"
+        
+        html += f"<b>Source PLTS:</b> {src_name}<br>"
+        html += f"<b>Target PLTS:</b> {tgt_name}<br><br>"
+        
+        html += "<b>State Mapping Function (h):</b><br>"
+        if morphism.mapping:
+            html += "<table border='0' cellspacing='2' cellpadding='2' style='font-family:monospace;'>"
+            for src_w, tgt_w in sorted(morphism.mapping.items(), key=lambda x: x[0].name_long):
+                src_str = f"{src_w.name_long} ({src_w.name_short})"
+                tgt_str = f"{tgt_w.name_long} ({tgt_w.name_short})" if tgt_w else "None"
+                html += f"<tr><td>{src_str}</td><td>&#8594;</td><td style='color:{c_head};'><b>{tgt_str}</b></td></tr>"
+            html += "</table>"
+        else:
+            html += f"<i style='color:{c_sub};'>(No mappings defined)</i>"
+            
+        return html

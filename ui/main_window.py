@@ -17,13 +17,13 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtGui import QAction
 
-from math_objects import Lattice, TwistStructure, World, Model, LatticeFilter, TwistFilter, FilteredModel
+from math_objects import Lattice, TwistStructure, World, Model, LatticeFilter, TwistFilter, FilteredModel, PLTSMorphism
 from services import ObjectManager, ThemeService, JSONHandler
 from parser.formula_parser import FormulaParser 
 
 from app_object_creation import (
     NewLatticeDialog, NewModelDialog,
-    NewTwistStructureDialog, NewWorldDialog, NewLatticeFilterDialog, NewFilteredModelDialog
+    NewTwistStructureDialog, NewWorldDialog, NewLatticeFilterDialog, NewFilteredModelDialog, NewMorphismDialog
 )
 from app_object_loading import MultiSelectDialog
 from config import PATHS
@@ -128,7 +128,7 @@ class MainWindow(QMainWindow):
         """Assembles the sidebar widget and connects its signals."""
         self.sidebar = SidebarWidget()
         self.sidebar.layout().setContentsMargins(5, 5, 5, 5)
-        self.sidebar.init_tree_categories(["Lattices", "Lattice Filters", "Twist Structures", "Twist Filters", "States", "PLTSs", "Filtered Models"])
+        self.sidebar.init_tree_categories(["Lattices", "Lattice Filters", "Twist Structures", "Twist Filters", "States", "PLTSs", "Filtered Models", "Morphisms"])
         
         self.sidebar.add_prop_requested.connect(self.add_proposition)
         self.sidebar.remove_prop_requested.connect(self.remove_proposition)
@@ -194,7 +194,8 @@ class MainWindow(QMainWindow):
                 ("Twist Structure", self.create_new_twist_structure),
                 ("State", self.create_new_world),
                 ("PLTS", self.create_new_model),
-                ("Filtered Model", self.create_new_filtered_model)
+                ("Filtered Model", self.create_new_filtered_model),
+                ("Morphism", self.create_new_morphism)
             ]),
             ("Load", [
                 ("Lattice", lambda: self.load_specific_object("Lattice", "lattices", "name")),
@@ -203,7 +204,8 @@ class MainWindow(QMainWindow):
                 ("Twist Filter", lambda: self.load_specific_object("Twist Filter", "twist_filters", "name")),
                 ("State", lambda: self.load_specific_object("World", "worlds", "world_name")),
                 ("PLTS", lambda: self.load_specific_object("Model", "models", "model_name")),
-                ("Filtered Model", lambda: self.load_specific_object("Filtered Model", "filtered_models", "filtered_model_name"))
+                ("Filtered Model", lambda: self.load_specific_object("Filtered Model", "filtered_models", "filtered_model_name")),
+                ("Morphism", lambda: self.load_specific_object("Morphism", "morphisms", "name"))
             ]),
             ("Delete", [
                 ("Lattice", lambda: self.delete_specific_object("Lattice", "lattices", "name")),
@@ -212,7 +214,8 @@ class MainWindow(QMainWindow):
                 ("Twist Filter", lambda: self.delete_specific_object("Twist Filter", "twist_filters", "name")),
                 ("State", lambda: self.delete_specific_object("World", "worlds", "world_name")),
                 ("PLTS", lambda: self.delete_specific_object("Model", "models", "model_name")),
-                ("Filtered Model", lambda: self.delete_specific_object("Filtered Model", "filtered_models", "filtered_model_name"))
+                ("Filtered Model", lambda: self.delete_specific_object("Filtered Model", "filtered_models", "filtered_model_name")),
+                ("Morphism", lambda: self.delete_specific_object("Morphism", "morphisms", "name"))
             ]),
             ("See", [
                 ("Lattices in File", lambda: self.see_objects_in_file("lattices", "name")),
@@ -221,7 +224,8 @@ class MainWindow(QMainWindow):
                 ("Twist Filters in File", lambda: self.see_objects_in_file("twist_filters", "name")),
                 ("States in File", lambda: self.see_objects_in_file("worlds", "world_name")),
                 ("PLTSs in File", lambda: self.see_objects_in_file("models", "model_name")),
-                ("Filtered Models in File", lambda: self.see_objects_in_file("filtered_models", "filtered_model_name"))
+                ("Filtered Models in File", lambda: self.see_objects_in_file("filtered_models", "filtered_model_name")),
+                ("Morphisms in File", lambda: self.see_objects_in_file("morphisms", "name"))
             ])
         ]
 
@@ -324,7 +328,7 @@ class MainWindow(QMainWindow):
     def register_object(self, name: str, obj: Any, type_str: str) -> None:
         self.manager.register_object(name, obj, type_str)
         
-        cat_map = {"Lattice": "Lattices", "Lattice Filter": "Lattice Filters","Twist Structure": "Twist Structures", "Twist Filter": "Twist Filters","World": "States", "Model": "PLTSs", "Filtered Model": "Filtered Models"}
+        cat_map = {"Lattice": "Lattices", "Lattice Filter": "Lattice Filters","Twist Structure": "Twist Structures", "Twist Filter": "Twist Filters","World": "States", "Model": "PLTSs", "Filtered Model": "Filtered Models", "Morphism": "Morphisms"}
         cat = cat_map.get(type_str)
         
         if hasattr(self.sidebar, 'tree_categories') and cat in self.sidebar.tree_categories:
@@ -366,7 +370,8 @@ class MainWindow(QMainWindow):
             "twist_filters": PATHS["twist_filters"],
             "worlds": PATHS["worlds"],
             "models": PATHS["models"],
-            "filtered_models": PATHS["filtered_models"]
+            "filtered_models": PATHS["filtered_models"],
+            "morphisms": PATHS["morphisms"]
         }
         fname = filename_map.get(json_key)
         if not fname:
@@ -381,7 +386,6 @@ class MainWindow(QMainWindow):
     def _recursive_register(self, obj: Any) -> None:
         """
         Recursively registers dependencies of an object to ensure they appear in the UI.
-        Traverses Model -> TwistStructure -> Lattice, and Filters.
         """
         if isinstance(obj, Model):
             self._recursive_register(obj.twist_structure)
@@ -424,6 +428,16 @@ class MainWindow(QMainWindow):
             self._recursive_register(obj.base_model)
             self._recursive_register(obj.twist_filter)
 
+        elif isinstance(obj, PLTSMorphism):
+            if obj.source_model:
+                if not self.is_object_loaded("Model", obj.source_model.name_model):
+                    self.register_object(obj.source_model.name_model, obj.source_model, "Model")
+                self._recursive_register(obj.source_model)
+            if obj.target_model:
+                if not self.is_object_loaded("Model", obj.target_model.name_model):
+                    self.register_object(obj.target_model.name_model, obj.target_model, "Model")
+                self._recursive_register(obj.target_model)
+
     def load_specific_object(self, ui_category: str, json_key: str, name_key: str) -> None:
         filename_map = {
             "Lattice": PATHS["lattices"],
@@ -432,7 +446,8 @@ class MainWindow(QMainWindow):
             "Twist Filter": PATHS["twist_filters"],
             "World": PATHS["worlds"],
             "Model": PATHS["models"],
-            "Filtered Model": PATHS["filtered_models"]
+            "Filtered Model": PATHS["filtered_models"],
+            "Morphism": PATHS["morphisms"]
         }
         
         fname = filename_map.get(ui_category)
@@ -470,6 +485,8 @@ class MainWindow(QMainWindow):
                         obj = JSONHandler.load_model_from_json(fname, selected_name)
                     elif ui_category == "Filtered Model":
                         obj = JSONHandler.load_filtered_model_from_json(fname, selected_name)
+                    elif ui_category == "Morphism":
+                        obj = JSONHandler.load_morphism_from_json(fname, selected_name)
 
                     if obj:
                         self.register_object(selected_name, obj, ui_category)
@@ -487,7 +504,8 @@ class MainWindow(QMainWindow):
             "Twist Filter": PATHS["twist_filters"],
             "World": PATHS["worlds"],
             "Model": PATHS["models"],
-            "Filtered Model": PATHS["filtered_models"]
+            "Filtered Model": PATHS["filtered_models"],
+            "Morphism": PATHS["morphisms"]
         }
         fname = filename_map.get(ui_category)
         if not fname: return
@@ -508,7 +526,8 @@ class MainWindow(QMainWindow):
                     "Twist Filter": JSONHandler.delete_twist_filter_from_json,
                     "World": JSONHandler.delete_world_from_json,
                     "Model": JSONHandler.delete_model_from_json,
-                    "Filtered Model": JSONHandler.delete_filtered_model_from_json
+                    "Filtered Model": JSONHandler.delete_filtered_model_from_json,
+                    "Morphism": JSONHandler.delete_morphism_from_json
                 }
                 
                 cat_map = {
@@ -518,7 +537,8 @@ class MainWindow(QMainWindow):
                     "Twist Filter": "Twist Filters",
                     "World": "States", 
                     "Model": "PLTSs",
-                    "Filtered Model": "Filtered Models"
+                    "Filtered Model": "Filtered Models",
+                    "Morphism": "Morphisms"
                 }
                 
                 handler = handler_map[ui_category]
@@ -669,6 +689,20 @@ class MainWindow(QMainWindow):
             if JSONHandler.save_filtered_model_to_json(PATHS["filtered_models"], filtered_model):
                 self.statusBar().showMessage(f"Success: Filtered Model '{filtered_model.name_model}' created.", 5000)
 
+    @handle_ui_errors
+    def create_new_morphism(self, checked=False) -> None:
+        model_names = JSONHandler.get_names_from_json(PATHS["models"], "models", "model_name")
+        if len(model_names) < 2:
+            raise ValueError("At least two PLTS models are required in files to create a morphism.")
+        
+        models_map = {name: JSONHandler.load_model_from_json(PATHS["models"], name) for name in model_names}
+        
+        dialog = NewMorphismDialog(models_map, self)
+        if dialog.exec():
+            name, morphism = dialog.get_data()
+            if JSONHandler.save_morphism_to_json(PATHS["morphisms"], morphism):
+                self.statusBar().showMessage(f"Success: Morphism '{name}' created and saved.", 5000)
+
 
     @handle_ui_errors
     def on_tree_item_clicked(self, item: QTreeWidgetItem) -> None:
@@ -707,6 +741,8 @@ class MainWindow(QMainWindow):
                 html = HTMLRenderer.render_model(self.manager.models.get(name), colors)
             elif cat == "Filtered Models":
                 html = HTMLRenderer.render_filtered_model(self.manager.filtered_models.get(name), colors)
+            elif cat == "Morphisms":
+                html = HTMLRenderer.render_morphism(self.manager.morphisms.get(name), colors)
 
             self.workspace.details_text.setHtml(html)
         except Exception as e:

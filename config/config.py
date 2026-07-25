@@ -13,5 +13,6 @@ PATHS = {
     "assets": os.path.join(DATA_DIR, "assets"),
     "lattice_filters": os.path.join(JSON_DIR, "lattice_filters.json"),
     "twist_filters": os.path.join(JSON_DIR, "twist_filters.json"),
-    "filtered_models": os.path.join(JSON_DIR, "filtered_models.json")
+    "filtered_models": os.path.join(JSON_DIR, "filtered_models.json"),
+    "morphisms": os.path.join(JSON_DIR, "morphisms.json")
 }

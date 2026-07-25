@@ -5,6 +5,7 @@ from services.json_handler import JSONHandler
 from services.logging_service import get_logger
 from typing import Dict, Any
 from math_objects.filters import LatticeFilter, TwistFilter
+from math_objects.morphism import PLTSMorphism
 from config import PATHS
 
 logger = get_logger("ObjectManager")
@@ -16,6 +17,7 @@ class ObjectManager:
         self.worlds: Dict[str, World] = {}
         self.models: Dict[str, Model] = {}
         self.filtered_models: Dict[str, FilteredModel] = {}
+        self.morphisms: Dict[str, PLTSMorphism] = {}
         self.lattice_filters: Dict[str, LatticeFilter] = {}
         self.twist_filters: Dict[str, TwistFilter] = {}
 
@@ -27,7 +29,8 @@ class ObjectManager:
             "Twist Filter": self.twist_filters,
             "World": self.worlds,
             "Model": self.models,
-            "Filtered Model": self.filtered_models
+            "Filtered Model": self.filtered_models,
+            "Morphism": self.morphisms
         }
         if type_str in mapping:
             mapping[type_str][name] = obj
@@ -43,7 +46,8 @@ class ObjectManager:
             "Twist Filter": self.twist_filters,
             "World": self.worlds,
             "Model": self.models,
-            "Filtered Model": self.filtered_models
+            "Filtered Model": self.filtered_models,
+            "Morphism": self.morphisms
         }
         return name in mapping.get(category, {})
 
@@ -55,7 +59,8 @@ class ObjectManager:
             "Twist Filter": self.twist_filters,
             "World": self.worlds,
             "Model": self.models,
-            "Filtered Model": self.filtered_models
+            "Filtered Model": self.filtered_models,
+            "Morphism": self.morphisms
         }
         obj = mapping.get(category, {}).get(name)
         if not obj:
@@ -70,7 +75,8 @@ class ObjectManager:
             "Twist Filter": self.twist_filters,
             "World": self.worlds,
             "Model": self.models,
-            "Filtered Model": self.filtered_models
+            "Filtered Model": self.filtered_models,
+            "Morphism": self.morphisms
         }
         
         target_dict = mapping.get(ui_category)
