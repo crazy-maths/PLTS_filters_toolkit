@@ -1,6 +1,6 @@
 from math_objects.lattice import Lattice, TwistStructure
 from math_objects.world import World
-from math_objects.model import Model
+from math_objects.model import Model, FilteredModel
 from services.json_handler import JSONHandler
 from services.logging_service import get_logger
 from typing import Dict, Any
@@ -15,8 +15,9 @@ class ObjectManager:
         self.twist_structures: Dict[str, TwistStructure] = {}
         self.worlds: Dict[str, World] = {}
         self.models: Dict[str, Model] = {}
-        self.lattice_filters: Dict[str, Any] = {}
-        self.twist_filters: Dict[str, Any] = {}
+        self.filtered_models: Dict[str, FilteredModel] = {}
+        self.lattice_filters: Dict[str, LatticeFilter] = {}
+        self.twist_filters: Dict[str, TwistFilter] = {}
 
     def register_object(self, name: str, obj: Any, type_str: str):
         mapping = {
@@ -25,7 +26,8 @@ class ObjectManager:
             "Twist Structure": self.twist_structures,
             "Twist Filter": self.twist_filters,
             "World": self.worlds,
-            "Model": self.models
+            "Model": self.models,
+            "Filtered Model": self.filtered_models
         }
         if type_str in mapping:
             mapping[type_str][name] = obj
@@ -40,7 +42,8 @@ class ObjectManager:
             "Twist Structure": self.twist_structures,
             "Twist Filter": self.twist_filters,
             "World": self.worlds,
-            "Model": self.models
+            "Model": self.models,
+            "Filtered Model": self.filtered_models
         }
         return name in mapping.get(category, {})
 
@@ -51,7 +54,8 @@ class ObjectManager:
             "Twist Structure": self.twist_structures,
             "Twist Filter": self.twist_filters,
             "World": self.worlds,
-            "Model": self.models
+            "Model": self.models,
+            "Filtered Model": self.filtered_models
         }
         obj = mapping.get(category, {}).get(name)
         if not obj:
@@ -65,13 +69,21 @@ class ObjectManager:
             "Twist Structure": self.twist_structures,
             "Twist Filter": self.twist_filters,
             "World": self.worlds,
-            "Model": self.models
+            "Model": self.models,
+            "Filtered Model": self.filtered_models
         }
-        if ui_category in mapping and name in mapping[ui_category]:
-            del mapping[ui_category][name]
-            logger.info(f"Deleted {ui_category}: {name}")
-        else:
-            logger.warning(f"Attempted to delete non-existent object: {ui_category} - {name}")
+        
+        target_dict = mapping.get(ui_category)
+        if target_dict is not None:
+            if name in target_dict:
+                del target_dict[name]
+                logger.info(f"Deleted {ui_category}: {name}")
+                return
+            else:
+                logger.debug(f"Object '{name}' was already absent from memory dictionary for '{ui_category}'.")
+                return
+
+        logger.warning(f"Attempted to delete non-existent object: {ui_category} - {name}")
 
     def create_lattice_filter(self, filter_name: str, lattice_name: str, filter_elements: set) -> bool:
         if lattice_name not in self.lattices:

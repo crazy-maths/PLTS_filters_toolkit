@@ -95,6 +95,37 @@ class HTMLRenderer:
         return html
 
     @staticmethod
+    def render_filtered_model(fm, colors: dict) -> str:
+        c_acc, c_text, c_sub = colors["accent"], colors["text"], colors["subtle"]
+        html = f"<h3 style='color:{c_acc};'>FILTERED MODEL: {fm.name_model}</h3>"
+        if hasattr(fm, 'description') and fm.description:
+            html += f"<b>Description:</b><br><i style='color:{c_text};'>{fm.description}</i><br><br>"
+        
+        base_name = fm.base_model.name_model if hasattr(fm, 'base_model') and fm.base_model else "Unknown"
+        filter_name = fm.twist_filter.name if hasattr(fm, 'twist_filter') and fm.twist_filter else "Unknown"
+        
+        html += f"<b>Base Model:</b> {base_name}<br>"
+        html += f"<b>Twist Filter:</b> {filter_name}<br>"
+        html += f"<b>States:</b> {', '.join(sorted([w.name_short for w in fm.worlds]))}<br>"
+        html += f"<b>Actions:</b> {', '.join(sorted(list(fm.actions)))}<br><br>"
+        
+        html += "<b>Filtered Crisp Relations:</b><br>"
+        if not fm.actions:
+            html += f"<i style='color:{c_sub};'>(No actions defined)</i>"
+        else:
+            for action in sorted(list(fm.actions)):
+                html += f"<div style='margin-top:5px; font-weight:bold; color:{c_text};'>[{action}] Transitions:</div>"
+                rel_map = fm.accessibility_relations.get(action, {})
+                sorted_src = sorted(rel_map.keys(), key=lambda w: w.name_short)
+                for src in sorted_src:
+                    targets = rel_map[src]
+                    if targets:
+                        valid_targets = [t.name_short for t in targets.keys() if t is not None]
+                        if valid_targets:
+                            html += f"<div style='margin-left:15px; font-family:monospace; color:{c_text};'>{src.name_short} &#8594; {{ {', '.join(sorted(valid_targets))} }}</div>"
+        return html
+
+    @staticmethod
     def render_symbol_legend(is_dark: bool, info_color: str) -> str:
         text_col, bg_col = ("white", "#333") if is_dark else ("black", "#f0f0f0")
         return f"""

@@ -3,11 +3,13 @@ from .new_model_dialog import NewModelDialog
 from .new_twist_structure_dialog import NewTwistStructureDialog
 from .new_world_dialog import NewWorldDialog
 from .new_lattice_filter_dialog import NewLatticeFilterDialog
+from .new_filtered_model_dialog import NewFilteredModelDialog
 
 __all__ = [
     "NewLatticeDialog",
     "NewModelDialog",
     "NewTwistStructureDialog",
     "NewWorldDialog",
-    "NewLatticeFilterDialog"
+    "NewLatticeFilterDialog",
+    "NewFilteredModelDialog"
 ]

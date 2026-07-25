@@ -17,13 +17,13 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtGui import QAction
 
-from math_objects import Lattice, TwistStructure, World, Model, LatticeFilter, TwistFilter
+from math_objects import Lattice, TwistStructure, World, Model, LatticeFilter, TwistFilter, FilteredModel
 from services import ObjectManager, ThemeService, JSONHandler
 from parser.formula_parser import FormulaParser 
 
 from app_object_creation import (
     NewLatticeDialog, NewModelDialog,
-    NewTwistStructureDialog, NewWorldDialog, NewLatticeFilterDialog
+    NewTwistStructureDialog, NewWorldDialog, NewLatticeFilterDialog, NewFilteredModelDialog
 )
 from app_object_loading import MultiSelectDialog
 from config import PATHS
@@ -128,7 +128,7 @@ class MainWindow(QMainWindow):
         """Assembles the sidebar widget and connects its signals."""
         self.sidebar = SidebarWidget()
         self.sidebar.layout().setContentsMargins(5, 5, 5, 5)
-        self.sidebar.init_tree_categories(["Lattices", "Lattice Filters", "Twist Structures", "Twist Filters", "States", "PLTSs"])
+        self.sidebar.init_tree_categories(["Lattices", "Lattice Filters", "Twist Structures", "Twist Filters", "States", "PLTSs", "Filtered Models"])
         
         self.sidebar.add_prop_requested.connect(self.add_proposition)
         self.sidebar.remove_prop_requested.connect(self.remove_proposition)
@@ -147,6 +147,7 @@ class MainWindow(QMainWindow):
         self.workspace = WorkspaceWidget()
         self.workspace.hasse_requested.connect(self.show_current_hasse)
         self.workspace.plts_requested.connect(self.visualize_current_model)
+        self.workspace.filtered_plts_requested.connect(self.visualize_current_filtered_model)
         
         self.interpreter = InterpreterWidget()
         self.interpreter.evaluate_requested.connect(self.evaluate_formula)
@@ -192,7 +193,8 @@ class MainWindow(QMainWindow):
                 ("Lattice Filter", self.create_new_lattice_filter),
                 ("Twist Structure", self.create_new_twist_structure),
                 ("State", self.create_new_world),
-                ("PLTS", self.create_new_model)
+                ("PLTS", self.create_new_model),
+                ("Filtered Model", self.create_new_filtered_model)
             ]),
             ("Load", [
                 ("Lattice", lambda: self.load_specific_object("Lattice", "lattices", "name")),
@@ -200,7 +202,8 @@ class MainWindow(QMainWindow):
                 ("Twist Structure", lambda: self.load_specific_object("Twist Structure", "twist_structures", "name")),
                 ("Twist Filter", lambda: self.load_specific_object("Twist Filter", "twist_filters", "name")),
                 ("State", lambda: self.load_specific_object("World", "worlds", "world_name")),
-                ("PLTS", lambda: self.load_specific_object("Model", "models", "model_name"))
+                ("PLTS", lambda: self.load_specific_object("Model", "models", "model_name")),
+                ("Filtered Model", lambda: self.load_specific_object("Filtered Model", "filtered_models", "filtered_model_name"))
             ]),
             ("Delete", [
                 ("Lattice", lambda: self.delete_specific_object("Lattice", "lattices", "name")),
@@ -208,7 +211,8 @@ class MainWindow(QMainWindow):
                 ("Twist Structure", lambda: self.delete_specific_object("Twist Structure", "twist_structures", "name")),
                 ("Twist Filter", lambda: self.delete_specific_object("Twist Filter", "twist_filters", "name")),
                 ("State", lambda: self.delete_specific_object("World", "worlds", "world_name")),
-                ("PLTS", lambda: self.delete_specific_object("Model", "models", "model_name"))
+                ("PLTS", lambda: self.delete_specific_object("Model", "models", "model_name")),
+                ("Filtered Model", lambda: self.delete_specific_object("Filtered Model", "filtered_models", "filtered_model_name"))
             ]),
             ("See", [
                 ("Lattices in File", lambda: self.see_objects_in_file("lattices", "name")),
@@ -216,7 +220,8 @@ class MainWindow(QMainWindow):
                 ("Twist Structures in File", lambda: self.see_objects_in_file("twist_structures", "name")),
                 ("Twist Filters in File", lambda: self.see_objects_in_file("twist_filters", "name")),
                 ("States in File", lambda: self.see_objects_in_file("worlds", "world_name")),
-                ("PLTSs in File", lambda: self.see_objects_in_file("models", "model_name"))
+                ("PLTSs in File", lambda: self.see_objects_in_file("models", "model_name")),
+                ("Filtered Models in File", lambda: self.see_objects_in_file("filtered_models", "filtered_model_name"))
             ])
         ]
 
@@ -319,7 +324,7 @@ class MainWindow(QMainWindow):
     def register_object(self, name: str, obj: Any, type_str: str) -> None:
         self.manager.register_object(name, obj, type_str)
         
-        cat_map = {"Lattice": "Lattices", "Lattice Filter": "Lattice Filters","Twist Structure": "Twist Structures", "Twist Filter": "Twist Filters","World": "States", "Model": "PLTSs"}
+        cat_map = {"Lattice": "Lattices", "Lattice Filter": "Lattice Filters","Twist Structure": "Twist Structures", "Twist Filter": "Twist Filters","World": "States", "Model": "PLTSs", "Filtered Model": "Filtered Models"}
         cat = cat_map.get(type_str)
         
         if hasattr(self.sidebar, 'tree_categories') and cat in self.sidebar.tree_categories:
@@ -360,7 +365,8 @@ class MainWindow(QMainWindow):
             "twist_structures": PATHS["twist_structures"],
             "twist_filters": PATHS["twist_filters"],
             "worlds": PATHS["worlds"],
-            "models": PATHS["models"]
+            "models": PATHS["models"],
+            "filtered_models": PATHS["filtered_models"]
         }
         fname = filename_map.get(json_key)
         if not fname:
@@ -412,6 +418,12 @@ class MainWindow(QMainWindow):
             if obj.twist_structure and not self.is_object_loaded("Twist Structure", obj.twist_name):
                 self._recursive_register(obj.twist_structure)
 
+        elif isinstance(obj, FilteredModel):
+            if not self.is_object_loaded("Model", obj.base_model.name_model):
+                self.register_object(obj.base_model.name_model, obj.base_model, "Model")
+            self._recursive_register(obj.base_model)
+            self._recursive_register(obj.twist_filter)
+
     def load_specific_object(self, ui_category: str, json_key: str, name_key: str) -> None:
         filename_map = {
             "Lattice": PATHS["lattices"],
@@ -419,7 +431,8 @@ class MainWindow(QMainWindow):
             "Twist Structure": PATHS["twist_structures"],
             "Twist Filter": PATHS["twist_filters"],
             "World": PATHS["worlds"],
-            "Model": PATHS["models"]
+            "Model": PATHS["models"],
+            "Filtered Model": PATHS["filtered_models"]
         }
         
         fname = filename_map.get(ui_category)
@@ -428,7 +441,7 @@ class MainWindow(QMainWindow):
             ErrorHandler.show_error("Load Error", f"Unknown category: {ui_category}", self)
             return
         
-        name_map = {"Model": "PLTS", "World": "State"}
+        name_map = {"Model": "PLTS", "World": "State", "Filtered Model": "Filtered Model"}
         display_name = name_map.get(ui_category, ui_category)
 
         names = JSONHandler.get_names_from_json(fname, json_key, name_key)
@@ -455,6 +468,8 @@ class MainWindow(QMainWindow):
                         obj = JSONHandler.load_world_from_json(fname, selected_name)
                     elif ui_category == "Model":
                         obj = JSONHandler.load_model_from_json(fname, selected_name)
+                    elif ui_category == "Filtered Model":
+                        obj = JSONHandler.load_filtered_model_from_json(fname, selected_name)
 
                     if obj:
                         self.register_object(selected_name, obj, ui_category)
@@ -471,13 +486,14 @@ class MainWindow(QMainWindow):
             "Twist Structure": PATHS["twist_structures"],
             "Twist Filter": PATHS["twist_filters"],
             "World": PATHS["worlds"],
-            "Model": PATHS["models"]
+            "Model": PATHS["models"],
+            "Filtered Model": PATHS["filtered_models"]
         }
         fname = filename_map.get(ui_category)
         if not fname: return
 
         names = JSONHandler.get_names_from_json(fname, json_key, name_key)
-        name_map = {"Model": "PLTS", "World": "State"}
+        name_map = {"Model": "PLTS", "World": "State", "Filtered Model": "Filtered Model"}
         display_name = name_map.get(ui_category, ui_category)
         
         dialog = MultiSelectDialog(f"Delete {display_name}", names, self)
@@ -491,7 +507,8 @@ class MainWindow(QMainWindow):
                     "Twist Structure": JSONHandler.delete_twist_structure_from_json,
                     "Twist Filter": JSONHandler.delete_twist_filter_from_json,
                     "World": JSONHandler.delete_world_from_json,
-                    "Model": JSONHandler.delete_model_from_json
+                    "Model": JSONHandler.delete_model_from_json,
+                    "Filtered Model": JSONHandler.delete_filtered_model_from_json
                 }
                 
                 cat_map = {
@@ -500,7 +517,8 @@ class MainWindow(QMainWindow):
                     "Twist Structure": "Twist Structures", 
                     "Twist Filter": "Twist Filters",
                     "World": "States", 
-                    "Model": "PLTSs"
+                    "Model": "PLTSs",
+                    "Filtered Model": "Filtered Models"
                 }
                 
                 handler = handler_map[ui_category]
@@ -624,6 +642,33 @@ class MainWindow(QMainWindow):
             if JSONHandler.save_model_to_json(PATHS["models"], m):
                 self.statusBar().showMessage(f"Success: Model '{name}' created.", 5000)
 
+    @handle_ui_errors
+    def create_new_filtered_model(self, checked=False) -> None:
+        model_names = JSONHandler.get_names_from_json(PATHS["models"], "models", "model_name")
+        if not model_names:
+            raise ValueError("No PLTS models found in file. Create a PLTS model first.")
+        
+        twist_filter_names = JSONHandler.get_names_from_json(PATHS["twist_filters"], "twist_filters", "name")
+        if not twist_filter_names:
+            raise ValueError("No twist filters found in file. Create a Twist Filter first.")
+        
+        twist_filters_map = {name: JSONHandler.load_twist_filter_from_json(PATHS["twist_filters"], name) for name in twist_filter_names}
+
+        dialog = NewFilteredModelDialog(model_names, twist_filters_map, self)
+        if dialog.exec():
+            base_model_name, filter_name, filtered_model_name = dialog.get_data()
+            
+            base_model = JSONHandler.load_model_from_json(PATHS["models"], base_model_name)
+            twist_filter = twist_filters_map.get(filter_name) or JSONHandler.load_twist_filter_from_json(PATHS["twist_filters"], filter_name)
+
+            if not base_model or not twist_filter:
+                raise ValueError("Could not load selected base model or twist filter.")
+
+            filtered_model = FilteredModel(base_model, twist_filter, name_model=filtered_model_name)
+            
+            if JSONHandler.save_filtered_model_to_json(PATHS["filtered_models"], filtered_model):
+                self.statusBar().showMessage(f"Success: Filtered Model '{filtered_model.name_model}' created.", 5000)
+
 
     @handle_ui_errors
     def on_tree_item_clicked(self, item: QTreeWidgetItem) -> None:
@@ -634,6 +679,7 @@ class MainWindow(QMainWindow):
 
         self.workspace.btn_hasse.setEnabled(cat in ["Lattices", "Twist Structures"])
         self.workspace.btn_plts.setEnabled(cat == "PLTSs")
+        self.workspace.btn_filtered_plts.setEnabled(cat == "Filtered Models")
 
         colors = {
             "header": self.get_theme_color("header"),
@@ -659,6 +705,8 @@ class MainWindow(QMainWindow):
                 html = HTMLRenderer.render_world(self.manager.worlds.get(name), colors, self.theme_service.is_dark_mode)
             elif cat == "PLTSs":
                 html = HTMLRenderer.render_model(self.manager.models.get(name), colors)
+            elif cat == "Filtered Models":
+                html = HTMLRenderer.render_filtered_model(self.manager.filtered_models.get(name), colors)
 
             self.workspace.details_text.setHtml(html)
         except Exception as e:
@@ -671,6 +719,16 @@ class MainWindow(QMainWindow):
         if not item or not item.parent() or item.parent().text(0) != "PLTSs":
             raise ValueError("Please select a PLTS in the Project Explorer tree to visualize.")
         self.manager.models[item.text(0)].draw_graph()
+
+    @handle_ui_errors
+    def visualize_current_filtered_model(self) -> None:
+        item = self.sidebar.tree.currentItem()
+        if not item or not item.parent() or item.parent().text(0) != "Filtered Models":
+            raise ValueError("Please select a Filtered Model in the Project Explorer tree to visualize.")
+        
+        filtered_model_obj = self.manager.filtered_models.get(item.text(0))
+        if filtered_model_obj:
+            filtered_model_obj.draw_graph()
 
     @handle_ui_errors
     def show_current_hasse(self) -> None:
@@ -697,7 +755,8 @@ class MainWindow(QMainWindow):
                     "Twist Structures": "Twist Structure",
                     "Twist Filters": "Twist Filter", 
                     "States": "World", 
-                    "PLTSs": "Model"
+                    "PLTSs": "Model",
+                    "Filtered Models": "Filtered Model"
                 }
                 
                 if cat in cat_map:

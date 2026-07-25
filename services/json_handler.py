@@ -1,7 +1,7 @@
 """
 JSON Handler Module.
 
-Handles persistence of Lattices, Residuated Lattices, Twist Structures, Worlds and Models.
+Handles persistence of Lattices, Twist Structures, Worlds and Models.
 """
 
 import json
@@ -17,6 +17,7 @@ from math_objects.world import World
 from math_objects.model import Model
 from math_objects.filters import LatticeFilter
 from math_objects.filters import TwistFilter
+from math_objects.model import FilteredModel
 
 logger = get_logger("JSONHandler")
 
@@ -465,5 +466,68 @@ class JSONHandler:
         data = JSONHandler._load_safe(filename)
         if 'twist_filters' in data:
             data['twist_filters'] = [tf for tf in data['twist_filters'] if tf.get('name') != filter_name]
+            with open(filename, 'w', encoding='utf-8') as f: 
+                f.write(JSONHandler._compact_json(data))
+
+    @staticmethod
+    def load_filtered_model_from_json(
+        filename: str, 
+        filtered_model_name: str, 
+        models_file: str = PATHS["models"],
+        twist_filters_file: str = PATHS["twist_filters"]
+    ) -> Optional[FilteredModel]:
+        data = JSONHandler._load_safe(filename)
+        if 'filtered_models' in data:
+            for fm in data['filtered_models']:
+                if fm.get('filtered_model_name') == filtered_model_name:
+                    try:
+                        base_model_name = fm.get('base_model_name')
+                        twist_filter_name = fm.get('twist_filter_name')
+                        
+                        base_model = JSONHandler.load_model_from_json(models_file, base_model_name)
+                        if not base_model:
+                            logger.error(f"Failed to load base model '{base_model_name}' for filtered model '{filtered_model_name}'")
+                            return None
+                        
+                        twist_filter = JSONHandler.load_twist_filter_from_json(twist_filters_file, twist_filter_name)
+                        if not twist_filter:
+                            logger.error(f"Failed to load twist filter '{twist_filter_name}' for filtered model '{filtered_model_name}'")
+                            return None
+                        
+                        return FilteredModel(base_model, twist_filter, name_model=filtered_model_name)
+                    except Exception as e:
+                        logger.error(f"Error loading filtered model '{filtered_model_name}' from {filename}: {str(e)}")
+                        return None
+        return None
+
+    @staticmethod
+    def save_filtered_model_to_json(filename: str, filtered_model: FilteredModel) -> bool:
+        try:
+            data = JSONHandler._load_safe(filename)
+            if 'filtered_models' not in data: 
+                data['filtered_models'] = []
+            
+            fm_list = [fm for fm in data['filtered_models'] if fm.get('filtered_model_name') != filtered_model.name_model]
+            
+            fm_list.append({
+                "filtered_model_name": filtered_model.name_model,
+                "base_model_name": filtered_model.base_model.name_model,
+                "twist_filter_name": filtered_model.twist_filter.name,
+                "description": filtered_model.description
+            })
+            data['filtered_models'] = fm_list
+            
+            with open(filename, 'w', encoding='utf-8') as f: 
+                f.write(JSONHandler._compact_json(data))
+            return True
+        except Exception as e:
+            logger.error(f"Error saving Filtered Model '{filtered_model.name_model}' to {filename}: {str(e)}")
+            return False
+
+    @staticmethod
+    def delete_filtered_model_from_json(filename: str, filtered_model_name: str) -> None:
+        data = JSONHandler._load_safe(filename)
+        if 'filtered_models' in data:
+            data['filtered_models'] = [fm for fm in data['filtered_models'] if fm.get('filtered_model_name') != filtered_model_name]
             with open(filename, 'w', encoding='utf-8') as f: 
                 f.write(JSONHandler._compact_json(data))

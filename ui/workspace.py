@@ -5,6 +5,7 @@ from PyQt6.QtCore import Qt
 class WorkspaceWidget(QWidget):
     hasse_requested = pyqtSignal()
     plts_requested = pyqtSignal()
+    filtered_plts_requested = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -32,9 +33,14 @@ class WorkspaceWidget(QWidget):
         self.btn_plts = QPushButton("Show PLTS")
         self.btn_plts.setEnabled(False)
         self.btn_plts.clicked.connect(self.plts_requested.emit)
+
+        self.btn_filtered_plts = QPushButton("Visualize Filtered Model")
+        self.btn_filtered_plts.setEnabled(False)
+        self.btn_filtered_plts.clicked.connect(self.filtered_plts_requested.emit)
         
         btn_layout.addWidget(self.btn_hasse)
         btn_layout.addWidget(self.btn_plts)
+        btn_layout.addWidget(self.btn_filtered_plts)
         layout.addLayout(btn_layout)
         
         layout.addWidget(QFrame(frameShape=QFrame.Shape.HLine))
