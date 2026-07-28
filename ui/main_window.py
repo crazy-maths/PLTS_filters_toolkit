@@ -564,6 +564,8 @@ class MainWindow(QMainWindow):
                 except Exception as e:
                     get_logger("MainWindow").warning(f"Could not auto-generate top filter for lattice '{name}': {str(e)}")
 
+                self.register_object(name, lat, "Lattice")
+                self._recursive_register(lat)
                 self.statusBar().showMessage(f"Success: Lattice '{name}' and filter '{top_filter_name}' created.", 5000)
 
     @handle_ui_errors
@@ -591,7 +593,8 @@ class MainWindow(QMainWindow):
                         tf_name = f"{name}_twist_{ts_name}"
                         t_filter = TwistFilter(tf_name, ts_name, lat_filter, ts_obj)
                         JSONHandler.save_twist_filter_to_json(PATHS["twist_filters"], t_filter)
-                        
+                self.register_object(name, lat_filter, "Lattice Filter")
+                self._recursive_register(lat_filter)
                 self.statusBar().showMessage(f"Success: Lattice Filter '{name}' created with cascading twist filters.", 5000)
 
     @handle_ui_errors
@@ -622,6 +625,8 @@ class MainWindow(QMainWindow):
                 except Exception as e:
                     get_logger("MainWindow").warning(f"Could not auto-generate twist filters for TS '{name}': {str(e)}")
 
+                self.register_object(name, ts, "Twist Structure")
+                self._recursive_register(ts)
                 self.statusBar().showMessage(f"Success: TS '{name}' created with cascading twist filters.", 5000)
 
     @handle_ui_errors
@@ -639,6 +644,8 @@ class MainWindow(QMainWindow):
                 if long_name in existing_worlds: raise ValueError(f"'{long_name}' exists.")
                 w = World(long_name, short_name, ts_map[ts_name], assignments)
                 if JSONHandler.save_world_to_json(PATHS["worlds"], w):
+                    self.register_object(long_name, w, "World")
+                    self._recursive_register(w)
                     created_count += 1
             self.statusBar().showMessage(f"Successfully created {created_count} states.", 5000)
 
@@ -660,6 +667,8 @@ class MainWindow(QMainWindow):
                          for s, targets in matrix.items()} for act, matrix in rel_data_dict.items()}
             m = Model(name, ts, {world_map[wn] for wn in w_names}, final_rels, props, description=description)
             if JSONHandler.save_model_to_json(PATHS["models"], m):
+                self.register_object(name, m, "Model")
+                self._recursive_register(m)
                 self.statusBar().showMessage(f"Success: Model '{name}' created.", 5000)
 
     @handle_ui_errors
@@ -687,6 +696,8 @@ class MainWindow(QMainWindow):
             filtered_model = FilteredModel(base_model, twist_filter, name_model=filtered_model_name)
             
             if JSONHandler.save_filtered_model_to_json(PATHS["filtered_models"], filtered_model):
+                self.register_object(filtered_model_name, filtered_model, "Filtered Model")
+                self._recursive_register(filtered_model)
                 self.statusBar().showMessage(f"Success: Filtered Model '{filtered_model.name_model}' created.", 5000)
 
     @handle_ui_errors
@@ -701,6 +712,8 @@ class MainWindow(QMainWindow):
         if dialog.exec():
             name, morphism = dialog.get_data()
             if JSONHandler.save_morphism_to_json(PATHS["morphisms"], morphism):
+                self.register_object(name, morphism, "Morphism")
+                self._recursive_register(morphism)
                 self.statusBar().showMessage(f"Success: Morphism '{name}' created and saved.", 5000)
 
 

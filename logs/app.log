@@ -234,3 +234,34 @@ AttributeError: 'list' object has no attribute 'endswith'
             </li>
         </ul>
         </div>
+2026-07-25 16:28:10,492 [INFO] ErrorHandler: Load Morphism: No objects found in c:\Users\rodri\OneDrive\Ambiente de Trabalho\PLTS_toolkit\data\json_files\morphisms.json.
+2026-07-28 09:59:00,045 [INFO] ErrorHandler: Load Filtered Model: No objects found in c:\Users\rodri\OneDrive\Ambiente de Trabalho\PLTS_toolkit\data\json_files\filtered_models.json.
+2026-07-28 09:59:21,705 [INFO] ObjectManager: Registered Filtered Model: Game_filtered_Top Three-Valued Algebra_twist_Nine
+2026-07-28 09:59:21,705 [INFO] ObjectManager: Registered Model: Game
+2026-07-28 09:59:21,718 [INFO] ObjectManager: Registered Twist Structure: Nine
+2026-07-28 09:59:21,718 [INFO] ObjectManager: Registered Lattice: Lukasiewicz Three-Valued Algebra
+2026-07-28 09:59:21,718 [INFO] ObjectManager: Registered World: Winner1
+2026-07-28 09:59:21,720 [INFO] ObjectManager: Registered World: Winner2
+2026-07-28 09:59:21,721 [INFO] ObjectManager: Registered World: int1
+2026-07-28 09:59:21,721 [INFO] ObjectManager: Registered World: int2
+2026-07-28 09:59:21,722 [INFO] ObjectManager: Registered World: start
+2026-07-28 09:59:21,722 [INFO] ObjectManager: Registered Twist Filter: Top Three-Valued Algebra_twist_Nine
+2026-07-28 09:59:21,722 [INFO] ObjectManager: Registered Lattice Filter: Top Three-Valued Algebra
+2026-07-28 10:00:02,241 [INFO] ObjectManager: Deleted Filtered Model: Game_filtered_Top Three-Valued Algebra_twist_Nine
+2026-07-28 10:11:42,804 [INFO] ErrorHandler: Prompting user confirmation - Confirm Deletion: Delete 1 item(s)?
+2026-07-28 10:11:47,648 [INFO] ObjectManager: Registered Filtered Model: Game_filtered_Top Three-Valued Algebra_twist_Nine
+2026-07-28 10:11:47,648 [INFO] ObjectManager: Registered Model: Game
+2026-07-28 10:11:47,658 [INFO] ObjectManager: Registered Twist Structure: Nine
+2026-07-28 10:11:47,658 [INFO] ObjectManager: Registered Lattice: Lukasiewicz Three-Valued Algebra
+2026-07-28 10:11:47,659 [INFO] ObjectManager: Registered World: int2
+2026-07-28 10:11:47,659 [INFO] ObjectManager: Registered World: Winner2
+2026-07-28 10:11:47,659 [INFO] ObjectManager: Registered World: Winner1
+2026-07-28 10:11:47,659 [INFO] ObjectManager: Registered World: start
+2026-07-28 10:11:47,661 [INFO] ObjectManager: Registered World: int1
+2026-07-28 10:11:47,662 [INFO] ObjectManager: Registered Twist Filter: Top Three-Valued Algebra_twist_Nine
+2026-07-28 10:11:47,662 [INFO] ObjectManager: Registered Lattice Filter: Top Three-Valued Algebra
+2026-07-28 10:12:04,257 [INFO] ErrorHandler: File Content: c:\Users\rodri\OneDrive\Ambiente de Trabalho\PLTS_toolkit\data\json_files\lattice_filters.json: Top Boolean Algebra
+Top Three-Valued Algebra
+2026-07-28 10:12:32,459 [WARNING] NewModelDialog: Attempted to access Relations tab without defining actions.
+2026-07-28 10:12:32,459 [WARNING] ErrorHandler: Action Required: Please define at least one action in the General tab first.
+2026-07-28 10:16:04,111 [INFO] ErrorHandler: Prompting user confirmation - Confirm Deletion: Delete 1 item(s)?

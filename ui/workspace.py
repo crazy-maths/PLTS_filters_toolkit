@@ -34,7 +34,7 @@ class WorkspaceWidget(QWidget):
         self.btn_plts.setEnabled(False)
         self.btn_plts.clicked.connect(self.plts_requested.emit)
 
-        self.btn_filtered_plts = QPushButton("Visualize Filtered Model")
+        self.btn_filtered_plts = QPushButton("Show Filtered PLTS")
         self.btn_filtered_plts.setEnabled(False)
         self.btn_filtered_plts.clicked.connect(self.filtered_plts_requested.emit)
         
