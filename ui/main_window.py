@@ -148,6 +148,7 @@ class MainWindow(QMainWindow):
         self.workspace.hasse_requested.connect(self.show_current_hasse)
         self.workspace.plts_requested.connect(self.visualize_current_model)
         self.workspace.filtered_plts_requested.connect(self.visualize_current_filtered_model)
+        self.workspace.morphism_requested.connect(self.visualize_current_morphism)
         
         self.interpreter = InterpreterWidget()
         self.interpreter.evaluate_requested.connect(self.evaluate_formula)
@@ -760,6 +761,7 @@ class MainWindow(QMainWindow):
         self.workspace.btn_hasse.setEnabled(cat in ["Lattices", "Twist Structures"])
         self.workspace.btn_plts.setEnabled(cat == "PLTSs")
         self.workspace.btn_filtered_plts.setEnabled(cat == "Filtered Models")
+        self.workspace.btn_morphism.setEnabled(cat == "Morphisms")
 
         colors = {
             "header": self.get_theme_color("header"),
@@ -813,6 +815,16 @@ class MainWindow(QMainWindow):
             filtered_model_obj.draw_graph()
 
     @handle_ui_errors
+    def visualize_current_morphism(self) -> None:
+        item = self.sidebar.tree.currentItem()
+        if not item or not item.parent() or item.parent().text(0) != "Morphisms":
+            raise ValueError("Please select a Morphism in the Project Explorer tree to visualize.")
+
+        morphism_obj = self.manager.morphisms.get(item.text(0))
+        if morphism_obj:
+            morphism_obj.draw_graph()
+
+    @handle_ui_errors
     def show_current_hasse(self) -> None:
         item = self.sidebar.tree.currentItem()
         if item and item.parent():
@@ -838,7 +850,8 @@ class MainWindow(QMainWindow):
                     "Twist Filters": "Twist Filter", 
                     "States": "World", 
                     "PLTSs": "Model",
-                    "Filtered Models": "Filtered Model"
+                    "Filtered Models": "Filtered Model",
+                    "Morphisms": "Morphism"
                 }
                 
                 if cat in cat_map:

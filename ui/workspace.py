@@ -6,6 +6,7 @@ class WorkspaceWidget(QWidget):
     hasse_requested = pyqtSignal()
     plts_requested = pyqtSignal()
     filtered_plts_requested = pyqtSignal()
+    morphism_requested = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -37,10 +38,15 @@ class WorkspaceWidget(QWidget):
         self.btn_filtered_plts = QPushButton("Show Filtered PLTS")
         self.btn_filtered_plts.setEnabled(False)
         self.btn_filtered_plts.clicked.connect(self.filtered_plts_requested.emit)
+
+        self.btn_morphism = QPushButton("Show Morphism")
+        self.btn_morphism.setEnabled(False)
+        self.btn_morphism.clicked.connect(self.morphism_requested.emit)
         
         btn_layout.addWidget(self.btn_hasse)
         btn_layout.addWidget(self.btn_plts)
         btn_layout.addWidget(self.btn_filtered_plts)
+        btn_layout.addWidget(self.btn_morphism)
         layout.addLayout(btn_layout)
         
         layout.addWidget(QFrame(frameShape=QFrame.Shape.HLine))
