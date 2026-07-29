@@ -1,3 +1,10 @@
 {
-    "filtered_models": []
+    "filtered_models": [
+        {
+            "filtered_model_name": "Game_filtered_Top Three-Valued Algebra_twist_Nine",
+            "base_model_name": "Game",
+            "twist_filter_name": "Top Three-Valued Algebra_twist_Nine",
+            "description": "Filtered model derived from Game using twist filter Top Three-Valued Algebra_twist_Nine"
+        }
+    ]
 }

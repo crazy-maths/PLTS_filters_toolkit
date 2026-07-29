@@ -5,6 +5,7 @@ from .new_world_dialog import NewWorldDialog
 from .new_lattice_filter_dialog import NewLatticeFilterDialog
 from .new_filtered_model_dialog import NewFilteredModelDialog
 from .new_morphism_dialog import NewMorphismDialog
+from .new_twist_filtered_dialog import NewTwistFilterDialog
 
 __all__ = [
     "NewLatticeDialog",

@@ -23,7 +23,7 @@ from parser.formula_parser import FormulaParser
 
 from app_object_creation import (
     NewLatticeDialog, NewModelDialog,
-    NewTwistStructureDialog, NewWorldDialog, NewLatticeFilterDialog, NewFilteredModelDialog, NewMorphismDialog
+    NewTwistStructureDialog, NewWorldDialog, NewLatticeFilterDialog, NewFilteredModelDialog, NewMorphismDialog, NewTwistFilterDialog
 )
 from app_object_loading import MultiSelectDialog
 from config import PATHS
@@ -192,6 +192,7 @@ class MainWindow(QMainWindow):
                 ("Lattice", self.create_new_lattice),
                 ("Lattice Filter", self.create_new_lattice_filter),
                 ("Twist Structure", self.create_new_twist_structure),
+                ("Twist Filter", self.create_new_twist_filter),
                 ("State", self.create_new_world),
                 ("PLTS", self.create_new_model),
                 ("Filtered Model", self.create_new_filtered_model),
@@ -266,21 +267,20 @@ class MainWindow(QMainWindow):
     def update_filter_combo(self) -> None:
         try:
             model_name = self.interpreter.get_selected_model()
-            filter_names = []
+            filter_names = set()
+            
             if model_name in self.manager.models:
                 model = self.manager.models[model_name]
                 ts_name = model.twist_structure.name if model.twist_structure else None
+                
                 if ts_name:
-                    filter_names = [name for name, tf in self.manager.twist_filters.items() if tf.twist_name == ts_name]
-                    
-                    if not filter_names:
-                        all_tf_names = JSONHandler.get_names_from_json(PATHS["twist_filters"], "twist_filters", "name")
-                        for tf_name in all_tf_names:
-                            tf_obj = JSONHandler.load_twist_filter_from_json(PATHS["twist_filters"], tf_name)
-                            if tf_obj and tf_obj.twist_name == ts_name:
-                                filter_names.append(tf_name)
-                                
-            self.interpreter.set_filter_list(filter_names)
+                    all_tf_names = JSONHandler.get_names_from_json(PATHS["twist_filters"], "twist_filters", "name")
+                    for tf_name in all_tf_names:
+                        tf_obj = JSONHandler.load_twist_filter_from_json(PATHS["twist_filters"], tf_name)
+                        if tf_obj and tf_obj.twist_name == ts_name:
+                            filter_names.add(tf_name)
+                            
+            self.interpreter.set_filter_list(sorted(list(filter_names)))
         except Exception as e:
             ErrorHandler.show_error("UI Update Error", f"Failed to refresh twist filters list: {str(e)}", self)
 
@@ -341,6 +341,7 @@ class MainWindow(QMainWindow):
             item.setText(0, name)
             
         if type_str == "Model": self.refresh_model_combo()
+        if type_str == "Twist Filter": self.update_filter_combo()
 
     def remove_from_tree(self, category_label: str, object_name: str) -> None:
         root_item = self.sidebar.tree_categories.get(category_label)
@@ -360,6 +361,8 @@ class MainWindow(QMainWindow):
         
         if ui_category == "Model": 
             self.refresh_model_combo()
+        if ui_category == "Twist Filter":
+            self.update_filter_combo()
 
 
     def see_objects_in_file(self, json_key: str, name_key: str) -> None:
@@ -595,6 +598,7 @@ class MainWindow(QMainWindow):
                         JSONHandler.save_twist_filter_to_json(PATHS["twist_filters"], t_filter)
                 self.register_object(name, lat_filter, "Lattice Filter")
                 self._recursive_register(lat_filter)
+                self.update_filter_combo()
                 self.statusBar().showMessage(f"Success: Lattice Filter '{name}' created with cascading twist filters.", 5000)
 
     @handle_ui_errors
@@ -628,6 +632,35 @@ class MainWindow(QMainWindow):
                 self.register_object(name, ts, "Twist Structure")
                 self._recursive_register(ts)
                 self.statusBar().showMessage(f"Success: TS '{name}' created with cascading twist filters.", 5000)
+
+    @handle_ui_errors
+    def create_new_twist_filter(self, checked=False) -> None:
+        ts_names = JSONHandler.get_names_from_json(PATHS["twist_structures"], "twist_structures", "name")
+        lf_names = JSONHandler.get_names_from_json(PATHS["lattice_filters"], "lattice_filters", "name")
+        
+        if not ts_names or not lf_names:
+            raise ValueError("Twist Structures and Lattice Filters must exist first.")
+            
+        ts_map = {name: JSONHandler.load_twist_structure_from_json(PATHS["twist_structures"], name) for name in ts_names}
+        lf_map = {name: JSONHandler.load_lattice_filter_from_json(PATHS["lattice_filters"], name) for name in lf_names}
+        
+        dialog = NewTwistFilterDialog(ts_map, lf_map, self)
+        if dialog.exec():
+            name, ts_name, lf_name = dialog.get_data()
+            if not name:
+                raise ValueError("Filter name cannot be empty.")
+                
+            ts_obj = ts_map.get(ts_name)
+            lf_obj = lf_map.get(lf_name)
+            
+            if lf_obj.lattice_name != ts_obj.lattice.name:
+                raise ValueError("The underlying Lattice Filter's lattice does not match the Twist Structure's lattice.")
+                
+            t_filter = TwistFilter(name, ts_name, lf_obj, ts_obj)
+            if JSONHandler.save_twist_filter_to_json(PATHS["twist_filters"], t_filter):
+                self.register_object(name, t_filter, "Twist Filter")
+                self._recursive_register(t_filter)
+                self.statusBar().showMessage(f"Success: Twist Filter '{name}' created.", 5000)
 
     @handle_ui_errors
     def create_new_world(self, checked=False) -> None:
