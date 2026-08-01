@@ -141,10 +141,10 @@ class Atom(ASTNode):
 
     def evaluate(self, model: Any, world: Any, twist: Any) -> Tuple[str, str]:
         if self.name in ('BOT', '0'):
-            return (twist.residuated_lattice.bottom, twist.residuated_lattice.top)
+            return (twist.lattice.bottom, twist.lattice.top)
         
         if self.name in ('TOP', '1'):
-            return (twist.residuated_lattice.top, twist.residuated_lattice.bottom)
+            return (twist.lattice.top, twist.lattice.bottom)
             
         if self.name in world.assignments:
             val_str = world.assignments[self.name]
@@ -238,7 +238,7 @@ class Diamond(ASTNode):
         
         if not targets_map:
             logger.warning(f"No relations found for Action '{self.action}' in State '{world.name_long}' of model '{model.name_model}'.")
-            return (twist.residuated_lattice.bottom, twist.residuated_lattice.top)
+            return (twist.lattice.bottom, twist.lattice.top)
             
         results = []
         for target, rel_weight in targets_map.items():
