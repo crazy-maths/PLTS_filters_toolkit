@@ -448,6 +448,36 @@
                 }
             },
             "props": ["profitable"]
+        },
+        {
+            "model_name": "PLTS_N Paper",
+            "description": "This example ilustrates a PLTS with three states (w0, w1, w2) and one action (a), defined over the twist structure NINE.",
+            "twist_structure_name": "Nine",
+            "worlds": [
+                "PLTS_N_w0",
+                "PLTS_N_w2",
+                "PLTS_N_w1"
+            ],
+            "accessibility_relations": {
+                "a": {
+                    "PLTS_N_w0": {
+                        "PLTS_N_w0": ["1/2", "1/2"],
+                        "PLTS_N_w1": ["1", "1"],
+                        "PLTS_N_w2": ["0", "1"]
+                    },
+                    "PLTS_N_w1": {
+                        "PLTS_N_w0": ["0", "1"],
+                        "PLTS_N_w1": ["0", "1"],
+                        "PLTS_N_w2": ["1/2", "1/2"]
+                    },
+                    "PLTS_N_w2": {
+                        "PLTS_N_w0": ["0", "1"],
+                        "PLTS_N_w1": ["0", "1"],
+                        "PLTS_N_w2": ["0", "1"]
+                    }
+                }
+            },
+            "props": ["p"]
         }
     ]
 }

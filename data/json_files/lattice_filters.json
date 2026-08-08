@@ -7,8 +7,13 @@
         },
         {
             "name": "Top Three-Valued Algebra",
-            "lattice_name": "Lukasiewicz Three-Valued Algebra",
+            "lattice_name": "Three-Valued Algebra",
             "filter_elements": ["1"]
+        },
+        {
+            "name": "One_Half Three-Valued Algebra",
+            "lattice_name": "Three-Valued Algebra",
+            "filter_elements": ["1", "1/2"]
         }
     ]
 }

@@ -151,6 +151,30 @@
             "assignments": {
                 "profitable": "('1', '1/2')"
             }
+        },
+        {
+            "world_name": "PLTS_N_w0",
+            "short_world_name": "w0",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "p": "('1/2', '0')"
+            }
+        },
+        {
+            "world_name": "PLTS_N_w1",
+            "short_world_name": "w1",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "p": "('0', '0')"
+            }
+        },
+        {
+            "world_name": "PLTS_N_w2",
+            "short_world_name": "w2",
+            "twist_structure_name": "Nine",
+            "assignments": {
+                "p": "('1', '1/2')"
+            }
         }
     ]
 }

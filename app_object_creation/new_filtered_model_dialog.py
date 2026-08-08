@@ -25,6 +25,7 @@ class NewFilteredModelDialog(QDialog):
 
         layout.addWidget(QLabel("Select Twist Filter:"))
         self.combo_filter = QComboBox()
+        self.combo_filter.currentIndexChanged.connect(self.update_model_name)
         layout.addWidget(self.combo_filter)
 
         layout.addWidget(QLabel("Filtered Model Name:"))
@@ -69,6 +70,12 @@ class NewFilteredModelDialog(QDialog):
             ErrorHandler.show_warning("Validation Error", "Filtered model name cannot be empty.", self)
             return
         self.accept()
+
+    def update_model_name(self) -> None:
+        selected_model = self.combo_model.currentText()
+        selected_filter = self.combo_filter.currentText()
+        if selected_model and selected_filter:
+            self.input_name.setText(f"{selected_model}_filtered_{selected_filter}")
 
     def get_data(self) -> tuple:
         return (

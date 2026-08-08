@@ -58,7 +58,7 @@ class EvaluationService:
             if twist_filter is not None:
                 in_filter = EvaluationService._check_membership(res, twist_filter)
                 status = "Yes" if in_filter else "No"
-                return f"{res_str} | In Filter '{twist_filter.name}': <b>{status}</b>"
+                return f"{res_str} | [In Filter: <b>{status}</b>]"
 
             return res_str
         except ValueError as ve:

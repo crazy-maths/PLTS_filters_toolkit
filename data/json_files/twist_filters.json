@@ -14,6 +14,17 @@
             "filter_elements": [["1", "0"],
                 ["1", "1"],
                 ["1", "1/2"]]
+        },
+        {
+            "name": "One_Half Three-Valued Algebra_twist_Nine",
+            "twist_name": "Nine",
+            "lattice_filter_name": "One_Half Three-Valued Algebra",
+            "filter_elements": [["1", "0"],
+                ["1", "1"],
+                ["1", "1/2"],
+                ["1/2", "0"],
+                ["1/2", "1"],
+                ["1/2", "1/2"]]
         }
     ]
 }

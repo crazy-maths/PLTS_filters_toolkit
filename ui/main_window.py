@@ -196,7 +196,7 @@ class MainWindow(QMainWindow):
                 ("Twist Filter", self.create_new_twist_filter),
                 ("State", self.create_new_world),
                 ("PLTS", self.create_new_model),
-                ("Filtered Model", self.create_new_filtered_model),
+                ("Filtered PLTS", self.create_new_filtered_model),
                 ("Morphism", self.create_new_morphism)
             ]),
             ("Load", [
@@ -206,7 +206,7 @@ class MainWindow(QMainWindow):
                 ("Twist Filter", lambda: self.load_specific_object("Twist Filter", "twist_filters", "name")),
                 ("State", lambda: self.load_specific_object("World", "worlds", "world_name")),
                 ("PLTS", lambda: self.load_specific_object("Model", "models", "model_name")),
-                ("Filtered Model", lambda: self.load_specific_object("Filtered Model", "filtered_models", "filtered_model_name")),
+                ("Filtered PLTS", lambda: self.load_specific_object("Filtered Model", "filtered_models", "filtered_model_name")),
                 ("Morphism", lambda: self.load_specific_object("Morphism", "morphisms", "name"))
             ]),
             ("Delete", [
@@ -216,7 +216,7 @@ class MainWindow(QMainWindow):
                 ("Twist Filter", lambda: self.delete_specific_object("Twist Filter", "twist_filters", "name")),
                 ("State", lambda: self.delete_specific_object("World", "worlds", "world_name")),
                 ("PLTS", lambda: self.delete_specific_object("Model", "models", "model_name")),
-                ("Filtered Model", lambda: self.delete_specific_object("Filtered Model", "filtered_models", "filtered_model_name")),
+                ("Filtered PLTS", lambda: self.delete_specific_object("Filtered Model", "filtered_models", "filtered_model_name")),
                 ("Morphism", lambda: self.delete_specific_object("Morphism", "morphisms", "name"))
             ]),
             ("See", [
@@ -225,8 +225,8 @@ class MainWindow(QMainWindow):
                 ("Twist Structures in File", lambda: self.see_objects_in_file("twist_structures", "name")),
                 ("Twist Filters in File", lambda: self.see_objects_in_file("twist_filters", "name")),
                 ("States in File", lambda: self.see_objects_in_file("worlds", "world_name")),
-                ("PLTSs in File", lambda: self.see_objects_in_file("models", "model_name")),
-                ("Filtered Models in File", lambda: self.see_objects_in_file("filtered_models", "filtered_model_name")),
+                ("PLTS in File", lambda: self.see_objects_in_file("models", "model_name")),
+                ("Filtered PLTS in File", lambda: self.see_objects_in_file("filtered_models", "filtered_model_name")),
                 ("Morphisms in File", lambda: self.see_objects_in_file("morphisms", "name"))
             ])
         ]
@@ -877,24 +877,14 @@ class MainWindow(QMainWindow):
         if not target_world:
             raise ValueError(f"State '{w_name}' not found in model '{m_name}'.")
         
-        res_str = EvaluationService.evaluate(f_str, self.manager.models[m_name], target_world)
-        
-        filter_status = ""
+        t_filter = None
         if tf_name:
             t_filter = self.manager.twist_filters.get(tf_name) or JSONHandler.load_twist_filter_from_json(PATHS["twist_filters"], tf_name)
-            if t_filter:
-                try:
-                    eval_val = eval(res_str) if isinstance(res_str, str) and res_str.startswith("(") else res_str
-                    
-                    norm_elements = {tuple(str(x).replace("'", "").strip() for x in e) if isinstance(e, tuple) else str(e).replace("'", "").strip() for e in t_filter.filter_elements}
-                    norm_eval = tuple(str(x).replace("'", "").strip() for x in eval_val) if isinstance(eval_val, tuple) else str(eval_val).replace("'", "").strip()
-                    
-                    in_filter = norm_eval in norm_elements
-                    filter_status = f" | [In Filter: <b>{'Yes' if in_filter else 'No'}</b>]"
-                except Exception:
-                    pass
+        
+        res_str = EvaluationService.evaluate(f_str, self.manager.models[m_name], target_world, twist_filter=t_filter)
+        
         self.interpreter.validity_label.clear()
-        self.interpreter.result_label.setText(f"Result: <b>{res_str}</b>{filter_status}")
+        self.interpreter.result_label.setText(f"<b>Result</b>: {res_str}")
         self.statusBar().showMessage(f"Evaluated: {res_str}", 5000)
 
     @handle_ui_errors

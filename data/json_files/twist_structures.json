@@ -50,7 +50,7 @@
         },
         {
             "name": "Nine",
-            "lattice_name": "Lukasiewicz Three-Valued Algebra",
+            "lattice_name": "Three-Valued Algebra",
             "elements": [["0", "0"],
                 ["0", "1"],
                 ["0", "1/2"],

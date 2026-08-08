@@ -161,7 +161,7 @@ class HTMLRenderer:
         
         <h4 style='color:{c_head};'>Filters</h4>
         <ul>
-            <li>Filter (F): A nonempty subset F &sub; L, satisfying:
+            <li>Prime Filter (F): A nonempty subset F &sub; L, satisfying:
                 <ul>
                     <li>a ∧ b ∈ F ⟺ (a ∈ F and b ∈ F)</li>
                     <li>a ∨ b ∈ F ⟺ (a ∈ F or b ∈ F)</li>

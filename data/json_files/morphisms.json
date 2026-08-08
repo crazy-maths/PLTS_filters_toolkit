@@ -1,28 +1,3 @@
 {
-    "morphisms": [
-        {
-            "name": "id_game",
-            "source_model": "Game",
-            "target_model": "Game",
-            "mapping": {
-                "Winner1": "Winner1",
-                "Winner2": "Winner2",
-                "int1": "int1",
-                "int2": "int2",
-                "start": "start"
-            },
-            "description": "Morphism from Game to Game"
-        },
-        {
-            "name": "id_plts_paper",
-            "source_model": "PLTS Paper",
-            "target_model": "PLTS Paper",
-            "mapping": {
-                "s0": "s0",
-                "s1": "s1",
-                "s2": "s2"
-            },
-            "description": "Morphism from PLTS Paper to PLTS Paper"
-        }
-    ]
+    "morphisms": []
 }
